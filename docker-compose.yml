@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+  shop.api:
+    image: ${DOCKER_REGISTRY}shopapi
+    build:
+      context: .
+      dockerfile: Shop.Api/Dockerfile
+
