@@ -4,3 +4,15 @@ obj/
 Shop\.Infrastructure/bin/
 
 Shop\.SamsonOpt\.Service/bin/
+
+Shop\.Core/Shop\.Api/bin/
+
+Shop\.Core/Shop\.Data/bin/
+
+Shop\.Core/Shop\.Infrastructure/bin/
+
+Shop\.Parsers/Shop\.Parsers\.Samson/Shop\.Parsers\.SamsonOpt/bin/
+
+Shop\.Parsers/Shop\.Parsers\.Samson/Shop\.Parsers\.SamsonOpt\.Model/bin/
+
+Shop\.Parsers/Shop\.Parsers\.Samson/Shop\.Parsers\.SamsonOpt\.Service/bin/

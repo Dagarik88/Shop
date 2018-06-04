@@ -1,20 +1,17 @@
 version: '3.4'
 
 services:
-  shop.samsonopt.api:
+  Shop.Api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
     ports:
-      - "80"
+      - "7701:80"
 
-  shop.api:
+  Shop.Parsers.SamsonOpt:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
     ports:
-      - "80"
-
-networks:
-  default:
-    external:
-      name: nat
+      - "7702:80"
 

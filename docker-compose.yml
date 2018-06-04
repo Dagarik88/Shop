@@ -2,8 +2,14 @@ version: '3.4'
 
 services:
   shop.api:
-    image: ${DOCKER_REGISTRY}shopapi
+    image: ${DOCKER_REGISTRY}ShopApi
     build:
       context: .
-      dockerfile: Shop.Api/Dockerfile
+      dockerfile: Shop.Core/Shop.Api/Dockerfile
+
+  shop.parsers.samsonopt:
+    image: ${DOCKER_REGISTRY}Shop.Parsers.SamsonOpt
+    build:
+      context: .
+      dockerfile: Shop.Parsers/Shop.Parsers.Samson/Shop.Parsers.SamsonOpt/Dockerfile
 
