@@ -26,3 +26,7 @@ Shop\.Core/Shop\.Api/Shop\.Data\.xml
 Shop\.Core/Shop\.Api/Shop\.Models\.xml
 
 *.user
+
+\.vs/
+
+Shop\.Core/Shop\.Services/bin/

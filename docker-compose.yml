@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: Shop.Core/Shop.Api/Dockerfile
+    depends_on:
+      - sql.data
 
   shop.parsers.samsonopt:
     image: ${DOCKER_REGISTRY}Shop.Parsers.SamsonOpt
@@ -13,3 +15,6 @@ services:
       context: .
       dockerfile: Shop.Parsers/Shop.Parsers.Samson/Shop.Parsers.SamsonOpt/Dockerfile
 
+###### using single instance of postgres in development 
+  sql.data:
+    image: postgres

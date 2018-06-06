@@ -48,7 +48,6 @@
                 "Shop.Api": {},
                 "Shop.Parsers.SamsonOpt": {}
             }
-
         }
     }
 }

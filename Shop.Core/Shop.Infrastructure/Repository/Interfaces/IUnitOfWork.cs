@@ -29,7 +29,7 @@ namespace Shop.Infrastructure.Repository.Interfaces
         /// </summary>
         /// <param name="ensureAutoHistory"><c>True</c> если сохранять все изменения в истории изменений. По умолчанию <c>False</c></param>
         /// <returns>
-        ///     <see cref="Task{TResult}"/> предоставляющую асинхронную запись изменений в базу данных. 
+        ///     <see cref="Task{TResult}"/> предоставляющую асинхронную запись изменений в базу данных.
         ///     Результатом задачи будет число изменённых записей в базе данных.
         /// </returns>
         Task<int> SaveChangesAsync(bool ensureAutoHistory = false);

@@ -20,7 +20,7 @@ namespace Shop.Infrastructure.Repository.Interfaces
         /// <param name="ensureAutoHistory"><c>True</c> если сохранять все изменения в истории изменений. По умолчанию <c>False</c></param>
         /// <param name="unitOfWorks">Одна или коллекция единиц работ с базой данных <see cref="IUnitOfWork"/>.</param>
         /// <returns>
-        ///     <see cref="Task{TResult}"/> предоставляющую асинхронную запись изменений в базу данных. 
+        ///     <see cref="Task{TResult}"/> предоставляющую асинхронную запись изменений в базу данных.
         ///     Результатом задачи будет число изменённых записей в базе данных.
         /// </returns>
         Task<int> SaveChangesAsync(bool ensureAutoHistory = false, params IUnitOfWork[] unitOfWorks);

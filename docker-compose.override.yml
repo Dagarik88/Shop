@@ -3,15 +3,27 @@ version: '3.4'
 services:
   Shop.Api:
     environment:
+      - BasePath=/api
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
+      - DbConnectionString=${SHOP_API_DB:-Host=sql.data;Port=5432;Database=shop-api-db;Username=shop-user;Password=Pass@word}
     ports:
       - "7701:80"
 
   Shop.Parsers.SamsonOpt:
     environment:
+      - BasePath=/parsers/SamsonOpt
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
     ports:
       - "7702:80"
+      
+##infrastructure#####################################################
+
+  sql.data:
+    environment:
+      - POSTGRES_PASSWORD=Pass@word
+      - POSTGRES_USER=shop-user
+    ports:
+      - "5439:5432"
 

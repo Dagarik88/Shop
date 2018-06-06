@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+
+###### using single instance of postgres in development 
+  sql.data:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=Pass@word
+      - POSTGRES_USER=shop-user
+    ports:
+      - "5432:5432"

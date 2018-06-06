@@ -54,7 +54,7 @@ namespace Shop.Parsers.SamsonOpt.Service.Services.Logic
         /// <param name="stoppingToken">Маркер отмены.</param>
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            // 
+            //
             if (_configuration.UpdateTimeType.Equals(UpdateTimeType.None))
             {
                 return;

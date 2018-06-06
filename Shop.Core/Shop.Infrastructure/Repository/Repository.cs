@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Shop.Infrastructure.Repository.Interfaces;
 using Shop.Infrastructure.Repository.PagedList;

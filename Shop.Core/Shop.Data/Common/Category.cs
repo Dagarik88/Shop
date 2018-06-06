@@ -48,6 +48,6 @@ namespace Shop.Data.Common
         /// </summary>
         public virtual IEnumerable<Category> ChildCategories { get; set; }
 
-        #endregion  Навигационные свойства
+        #endregion Навигационные свойства
     }
 }

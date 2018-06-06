@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shop.Data.Common;
+using Shop.Services.Services.Interfaces;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -12,13 +13,25 @@ namespace Shop.Api.Controllers
     [Route("/api/categories")]
     public class CategoryController : Controller
     {
+        #region Поля
+
+        /// <summary>
+        /// Сервис по управлению категориями каталога.
+        /// </summary>
+        private readonly ICategoryManager _categoryManager;
+
+        #endregion Поля
+
         #region Конструктор
 
         /// <summary>
         /// Конструктор по умолчанию.
         /// </summary>
-        public CategoryController()
+        /// <param name="categoryManager">Сервис по управлению категориями каталога.</param>
+        public CategoryController(
+            ICategoryManager categoryManager)
         {
+            _categoryManager = categoryManager;
         }
 
         #endregion Конструктор
@@ -26,15 +39,17 @@ namespace Shop.Api.Controllers
         #region API Методы
 
         /// <summary>
-        /// Возвращает список всех категории каталога.
+        /// Возвращает список всех категорий каталога.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Список всех категорий каталога.</returns>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Category>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         public async Task<object> GetCategories()
         {
-            return "";
+            var result = await _categoryManager.GetCategories();
+
+            return result;
         }
 
         /// <summary>
@@ -64,6 +79,7 @@ namespace Shop.Api.Controllers
         /// <summary>
         /// Массовое обновление категорий в каталоге.
         /// </summary>
+        /// <param name="categoryIds">Массив ID значений категорий.</param>
         /// <returns></returns>
         [HttpDelete]
         [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
@@ -74,15 +90,23 @@ namespace Shop.Api.Controllers
         }
 
         /// <summary>
-        /// Возвращает категорию каталога со всеми дочерними связями.
+        /// Возвращает категорию каталога с подкатегориями.
         /// </summary>
-        /// <returns></returns>
+        /// <param name="categoryId">ID значение категории.</param>
+        /// <returns>Категорию каталога с подкатегориями.</returns>
         [HttpGet("{categoryId}")]
         [ProducesResponseType(typeof(Category), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         public async Task<object> GetCategory(int categoryId)
         {
-            return "";
+            var result = await _categoryManager.GetCategory(categoryId);
+
+            if (result == null)
+            {
+                return new NotFoundResult();
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -100,13 +124,20 @@ namespace Shop.Api.Controllers
         /// <summary>
         /// Удаляет категорию из каталога.
         /// </summary>
+        /// <param name="categoryId">ID значение категории.</param>
         /// <returns></returns>
         [HttpDelete("{categoryId}")]
         [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         public async Task<object> DeleteCategory(int categoryId)
         {
-            return "";
+            var result = await _categoryManager.DeleteCategory(categoryId);
+            if (result)
+            {
+                return new OkObjectResult(result);
+            }
+
+            return new BadRequestObjectResult(result);
         }
 
         #endregion API Методы

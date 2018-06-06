@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -6,6 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Shop.Data;
 using Shop.Infrastructure.Repository;
 using Shop.Models.Configuration;
+using Shop.Services.Mappings;
+using Shop.Services.Services.Interfaces;
+using Shop.Services.Services.Logic;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
@@ -65,11 +69,16 @@ namespace Shop.Api
         {
             var dbConnectionString = Configuration["DbConnectionString"] ?? Configuration.GetConnectionString("DefaultConnection");
 
+            services.AddScoped(typeof(ICategoryManager), typeof(CategoryManager));
+
             // конфигурирование БД
             ConfigureDatabaseService(services, dbConnectionString);
 
             // конфигурирование .Core и MVC
             ConfigureMvcNetCoreService(services);
+
+            // конфигурирование AutoMapper
+            ConfigureAutoMapper(services);
 
             // конфигурирование Swagger
             ConfigureSwaggerService(services);
@@ -89,7 +98,7 @@ namespace Shop.Api
         {
             var dbContext = app.ApplicationServices.GetService<ShopContext>();
 
-            //dbContext.Database.Migrate();
+            dbContext.Database.Migrate();
 
             // настройка политики Cors
             app.UseCors(CORS_POLICY_NAME);
@@ -157,6 +166,16 @@ namespace Shop.Api
                 .AddAuthorization()
                 .AddDataAnnotations()
                 .AddApiExplorer();
+        }
+
+        /// <summary>
+        /// Настройка AutoMapper.
+        /// </summary>
+        /// <param name="services">Коллекция сервисов.</param>
+        private void ConfigureAutoMapper(IServiceCollection services)
+        {
+            Mapper.Initialize(expression => expression.AddProfiles(AutoMapperConfiguration.GetProfiles()));
+            services.AddSingleton(Mapper.Instance);
         }
 
         /// <summary>
