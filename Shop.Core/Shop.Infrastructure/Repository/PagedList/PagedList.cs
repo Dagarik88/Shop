@@ -5,66 +5,68 @@ using System.Linq;
 namespace Shop.Infrastructure.Repository.PagedList
 {
     /// <summary>
-    /// Represents the default implementation of the <see cref="IPagedList{T}"/> interface.
+    /// Модель для постраничных данных.
     /// </summary>
-    /// <typeparam name="T">The type of the data to page</typeparam>
+    /// <typeparam name="T">Тип объекта для постраничного разбиения.</typeparam>
     public class PagedList<T> : IPagedList<T>
     {
         /// <summary>
-        /// Gets or sets the index of the page.
+        /// Получает или задает номер выбранной страницы.
         /// </summary>
-        /// <value>The index of the page.</value>
+        /// <value>Номер выбранной страницы.</value>
         public int PageIndex { get; set; }
 
         /// <summary>
-        /// Gets or sets the size of the page.
+        /// Получает или задает количество объектов на странице.
         /// </summary>
-        /// <value>The size of the page.</value>
+        /// <value>Количество объектов на странице.</value>
         public int PageSize { get; set; }
 
         /// <summary>
-        /// Gets or sets the total count.
+        /// Получает или задает общее количество объектов типа <typeparamref name="T"/>.
         /// </summary>
-        /// <value>The total count.</value>
+        /// <value>Общее количество объектов типа <typeparamref name="T"/>.</value>
         public int TotalCount { get; set; }
 
         /// <summary>
-        /// Gets or sets the total pages.
+        /// Получает или задает общее количество страниц.
         /// </summary>
-        /// <value>The total pages.</value>
+        /// <value>Общее количество страниц.</value>
         public int TotalPages { get; set; }
 
         /// <summary>
-        /// Gets or sets the index from.
+        /// Получает или задает номер начальной страницы.
         /// </summary>
-        /// <value>The index from.</value>
+        /// <value>Номер начальной страницы.</value>
         public int IndexFrom { get; set; }
 
         /// <summary>
-        /// Gets or sets the items.
+        /// Получает или задает список объектов типа <typeparamref name="T"/>.
         /// </summary>
-        /// <value>The items.</value>
+        /// <value>Коллекция объектов типа <typeparamref name="T"/>.</value>
         public IList<T> Items { get; set; }
 
         /// <summary>
-        /// Gets the has previous page.
+        /// Получает или задает возможность сущестования предыдущей страницы.
         /// </summary>
-        /// <value>The has previous page.</value>
+        /// <value>Флаг возможности сущестования предыдущей страницы.</value>
         public bool HasPreviousPage => PageIndex - IndexFrom > 0;
 
         /// <summary>
-        /// Gets the has next page.
+        /// Получает или задает возможность сущестования следующей страницы.
         /// </summary>
-        /// <value>The has next page.</value>
+        /// <value>Флаг возможности сущестования следующей страницы.</value>
         public bool HasNextPage => PageIndex - IndexFrom + 1 < TotalPages;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PagedList{T}" /> class.
+        /// Конструктор создает готовый экземпляр с заданными параметрами:
+        /// Номеру выбранной страницы <paramref name="pageIndex"/>.
+        /// Количеству объектов на странице <paramref name="pageSize"/>.
         /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="pageIndex">The index of the page.</param>
-        /// <param name="pageSize">The size of the page.</param>
-        /// <param name="indexFrom">The index from.</param>
+        /// <param name="source">Тип объекта для постраничного разбиения.</param>
+        /// <param name="pageIndex">Номер выбранной страницы.</param>
+        /// <param name="pageSize">Количество объектов на странице.</param>
+        /// <param name="indexFrom">Номер начальной страницы.</param>
         internal PagedList(IEnumerable<T> source, int pageIndex, int pageSize, int indexFrom)
         {
             if (indexFrom > pageIndex)
@@ -95,74 +97,74 @@ namespace Shop.Infrastructure.Repository.PagedList
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PagedList{T}" /> class.
+        /// Конструктор по умолчанию.
         /// </summary>
         internal PagedList() => Items = new T[0];
     }
 
     /// <summary>
-    /// Provides the implementation of the <see cref="IPagedList{T}"/> and converter.
+    /// Реализация постраничного представления тип <see cref="IPagedList{T}"/> и его конвертация.
     /// </summary>
-    /// <typeparam name="TSource">The type of the source.</typeparam>
-    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <typeparam name="TSource">Тип исходного объекта.</typeparam>
+    /// <typeparam name="TResult">Тип ожидаемого объекта.</typeparam>
     internal class PagedList<TSource, TResult> : IPagedList<TResult>
     {
         /// <summary>
-        /// Gets the index of the page.
+        /// Возвращаен номер выбранной страницы.
         /// </summary>
-        /// <value>The index of the page.</value>
+        /// <value>Номер выбранной страницы.</value>
         public int PageIndex { get; }
 
         /// <summary>
-        /// Gets the size of the page.
+        /// Возвращает количиство объектов на странице типа <typeparamref name="TResult"/>.
         /// </summary>
-        /// <value>The size of the page.</value>
+        /// <value>Количиство объектов на странице.</value>
         public int PageSize { get; }
 
         /// <summary>
-        /// Gets the total count.
+        /// Возвращает общее количество  объекта типа <typeparamref name="TResult"/>.
         /// </summary>
-        /// <value>The total count.</value>
+        /// <value>Общее количество объектов.</value>
         public int TotalCount { get; }
 
         /// <summary>
-        /// Gets the total pages.
+        /// Возвращает общее количество страниц.
         /// </summary>
-        /// <value>The total pages.</value>
+        /// <value>Общее количество страниц.</value>
         public int TotalPages { get; }
 
         /// <summary>
-        /// Gets the index from.
+        /// Возвращает номер начальной страницы.
         /// </summary>
-        /// <value>The index from.</value>
+        /// <value>Номер начальной страницы.</value>
         public int IndexFrom { get; }
 
         /// <summary>
-        /// Gets the items.
+        /// Возвращает ограниченную коллекцию объектов типа <typeparamref name="TResult"/>.
         /// </summary>
-        /// <value>The items.</value>
+        /// <value>Объекты типа <typeparamref name="T"/>.</value>
         public IList<TResult> Items { get; }
 
         /// <summary>
-        /// Gets the has previous page.
+        /// Возвращает фалаг существования предыдущей страницы.
         /// </summary>
-        /// <value>The has previous page.</value>
+        /// <value>Существование предыдущей страницы.</value>
         public bool HasPreviousPage => PageIndex - IndexFrom > 0;
 
         /// <summary>
-        /// Gets the has next page.
+        /// Возвращает фалаг существования следующей страницы.
         /// </summary>
-        /// <value>The has next page.</value>
+        /// <value>Существование следующей страницы.</value>
         public bool HasNextPage => PageIndex - IndexFrom + 1 < TotalPages;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PagedList{TSource, TResult}" /> class.
+        /// Конструктор <see cref="PagedList{TSource, TResult}" />.
         /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="converter">The converter.</param>
-        /// <param name="pageIndex">The index of the page.</param>
-        /// <param name="pageSize">The size of the page.</param>
-        /// <param name="indexFrom">The index from.</param>
+        /// <param name="source">Коллекция для постраничного разбиения.</param>
+        /// <param name="converter">Функция конвертирующая из <typeparamref name="TSource"/> в <typeparamref name="TResult"/>.</param>
+        /// <param name="pageIndex">Номер выбранной страницы.</param>
+        /// <param name="pageSize">Количество объектов на странице.</param>
+        /// <param name="indexFrom">Номер начальной страницы.</param>
         public PagedList(IEnumerable<TSource> source, Func<IEnumerable<TSource>, IEnumerable<TResult>> converter, int pageIndex, int pageSize, int indexFrom)
         {
             if (indexFrom > pageIndex)
@@ -197,10 +199,10 @@ namespace Shop.Infrastructure.Repository.PagedList
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PagedList{TSource, TResult}" /> class.
+        /// Создает новый экземпляр <see cref="PagedList{TSource, TResult}" />.
         /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="converter">The converter.</param>
+        /// <param name="source">Коллекция для постраничного разбиения.</param>
+        /// <param name="converter">Функция конвертирующая из <typeparamref name="TSource"/> в <typeparamref name="TResult"/>.</param>
         public PagedList(IPagedList<TSource> source, Func<IEnumerable<TSource>, IEnumerable<TResult>> converter)
         {
             PageIndex = source.PageIndex;
@@ -214,25 +216,25 @@ namespace Shop.Infrastructure.Repository.PagedList
     }
 
     /// <summary>
-    /// Provides some help methods for <see cref="IPagedList{T}"/> interface.
+    /// Хэлперы для <see cref="IPagedList{T}"/>.
     /// </summary>
     public static class PagedList
     {
         /// <summary>
-        /// Creates an empty of <see cref="IPagedList{T}"/>.
+        /// Создание пустого <see cref="IPagedList{T}"/>.
         /// </summary>
-        /// <typeparam name="T">The type for paging </typeparam>
-        /// <returns>An empty instance of <see cref="IPagedList{T}"/>.</returns>
+        /// <typeparam name="T">Тип объекта для постраничного разбиения.</typeparam>
+        /// <returns>Пустой экзепляр <see cref="IPagedList{T}"/>.</returns>
         public static IPagedList<T> Empty<T>() => new PagedList<T>();
 
         /// <summary>
-        /// Creates a new instance of <see cref="IPagedList{TResult}"/> from source of <see cref="IPagedList{TSource}"/> instance.
+        /// Создание нового экзепляра <see cref="IPagedList{TResult}"/> из <see cref="IPagedList{TSource}"/>.
         /// </summary>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
-        /// <typeparam name="TSource">The type of the source.</typeparam>
-        /// <param name="source">The source.</param>
-        /// <param name="converter">The converter.</param>
-        /// <returns>An instance of <see cref="IPagedList{TResult}"/>.</returns>
+        /// <typeparam name="TResult">Тип ожидаемого объекта.</typeparam>
+        /// <typeparam name="TSource">Тип задаваемого объекта.</typeparam>
+        /// <param name="source">Коллекция для постраничного разбиения.</param>
+        /// <param name="converter">Функция конвертирующая из <typeparamref name="TSource"/> в <typeparamref name="TResult"/>.</param>
+        /// <returns>Экземпляр <see cref="IPagedList{TResult}"/>.</returns>
         public static IPagedList<TResult> From<TResult, TSource>(IPagedList<TSource> source, Func<IEnumerable<TSource>, IEnumerable<TResult>> converter) => new PagedList<TSource, TResult>(source, converter);
     }
 }

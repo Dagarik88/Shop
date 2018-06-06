@@ -10,31 +10,55 @@ using System.Threading.Tasks;
 namespace Shop.Infrastructure.Repository.Interfaces
 {
     /// <summary>
-    /// Defines the interfaces for generic repository.
+    /// Интерфес для универсального репозитория.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <typeparam name="TEntity">Тип объекта.</typeparam>
     public interface IRepository<TEntity> where TEntity : class
     {
-        /// <summary>
-        /// Changes the table name. This require the tables in the same database.
-        /// </summary>
-        /// <param name="table"></param>
-        /// <remarks>
-        /// This only been used for supporting multiple tables in the same model. This require the tables in the same database.
-        /// </remarks>
-        void ChangeTable(string table);
+        #region Методы поиска объектов
 
         /// <summary>
-        /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// Возвращает <see cref="IQueryable{TEntity}"/> на основе условия выборки, сортировки. Этот метод по умолчанию не отслеживает запрос.
         /// </summary>
-        /// <param name="predicate">A function to test each element for a condition.</param>
-        /// <param name="orderBy">A function to order elements.</param>
-        /// <param name="include">A function to include navigation properties</param>
-        /// <param name="pageIndex">The index of page.</param>
-        /// <param name="pageSize">The size of the page.</param>
-        /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
-        /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
-        /// <remarks>This method default no-tracking query.</remarks>
+        /// <param name="predicate">Функция условний для выборки.</param>
+        /// <param name="orderBy">Функция сортировки.</param>
+        /// <param name="include">Функция подключения навигаций дочерних/родительских элементов.</param>
+        /// <param name="disableTracking"><c>True</c> для отключения отслеживания запроса; в противном случае, <c>false</c>. По умолчанию: <c>true</c>.</param>
+        /// <returns>Коллекция <see cref="IQueryable{TEntity}"/> которая содержит элементы удовлетворающие условию выборки <paramref name="predicate"/>, сортировки <paramref name="orderBy"/> и навигаций <paramref name="include"/>.</returns>
+        /// <remarks>Этот метод по умолчанию не отслеживает запрос.</remarks>
+        IQueryable<TEntity> GetList(Expression<Func<TEntity, bool>> predicate = null,
+                                                Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+                                                Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+                                                bool disableTracking = true);
+
+        /// <summary>
+        /// Возвращает <see cref="IEnumerable{TEntity}"/> на основе условия выборки, сортировки. Этот метод по умолчанию не отслеживает запрос.
+        /// </summary>
+        /// <param name="predicate">Функция условний для выборки.</param>
+        /// <param name="orderBy">Функция сортировки.</param>
+        /// <param name="include">Функция подключения навигаций дочерних/родительских элементов.</param>
+        /// <param name="disableTracking"><c>True</c> для отключения отслеживания запроса; в противном случае, <c>false</c>. По умолчанию: <c>true</c>.</param>
+        /// <returns>Коллекция <see cref="IQueryable{TEntity}"/> которая содержит элементы удовлетворающие условию выборки <paramref name="predicate"/>, сортировки <paramref name="orderBy"/> и навигаций <paramref name="include"/>.</returns>
+        /// <remarks>Этот метод по умолчанию не отслеживает запрос.</remarks>
+        Task<IEnumerable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null,
+                                                Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+                                                Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+                                                bool disableTracking = true);
+
+        /// <summary>
+        /// Возвращает <see cref="IPagedList{TEntity}"/> на основе условия выборки, сортировки. Этот метод по умолчанию не отслеживает запрос.
+        /// </summary>
+        /// <param name="predicate">Функция условний для выборки.</param>
+        /// <param name="orderBy">Функция сортировки.</param>
+        /// <param name="include">Функция подключения навигаций дочерних/родительских элементов.</param>
+        /// <param name="pageIndex">Номер выбронной страницы.</param>
+        /// <param name="pageSize">Количество объектов на странице.</param>
+        /// <param name="disableTracking"><c>True</c> для отключения отслеживания запроса; в противном случае, <c>false</c>. По умолчанию: <c>true</c>.</param>
+        /// <returns>
+        ///     Коллекция <see cref="IPagedList{TEntity}"/> которая содержит элементы удовлетворающие
+        ///     условию выборки <paramref name="predicate"/>, сортировки <paramref name="orderBy"/> и навигаций <paramref name="include"/>.
+        /// </returns>
+        /// <remarks>Этот метод по умолчанию не отслеживает запрос.</remarks>
         IPagedList<TEntity> GetPagedList(Expression<Func<TEntity, bool>> predicate = null,
                                          Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                          Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
@@ -43,19 +67,20 @@ namespace Shop.Infrastructure.Repository.Interfaces
                                          bool disableTracking = true);
 
         /// <summary>
-        /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// Асинхронный метод возвращающий <see cref="IPagedList{TEntity}"/> на основе условия выборки, сортировки. Этот метод по умолчанию не отслеживает запрос.
         /// </summary>
-        /// <param name="predicate">A function to test each element for a condition.</param>
-        /// <param name="orderBy">A function to order elements.</param>
-        /// <param name="include">A function to include navigation properties</param>
-        /// <param name="pageIndex">The index of page.</param>
-        /// <param name="pageSize">The size of the page.</param>
-        /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
-        /// <param name="cancellationToken">
-        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
-        /// </param>
-        /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
-        /// <remarks>This method default no-tracking query.</remarks>
+        /// <param name="predicate">Функция условний для выборки.</param>
+        /// <param name="orderBy">Функция сортировки.</param>
+        /// <param name="include">Функция подключения навигаций дочерних/родительских элементов.</param>
+        /// <param name="pageIndex">Номер выбронной страницы.</param>
+        /// <param name="pageSize">Количество объектов на странице.</param>
+        /// <param name="disableTracking"><c>True</c> для отключения отслеживания запроса; в противном случае, <c>false</c>. По умолчанию: <c>true</c>.</param>
+        /// <param name="cancellationToken"><see cref="CancellationToken" /> маркер отмены.</param>
+        /// <returns>
+        ///     Коллекция <see cref="IPagedList{TEntity}"/> которая содержит элементы удовлетворающие
+        ///     условию выборки <paramref name="predicate"/>, сортировки <paramref name="orderBy"/> и навигаций <paramref name="include"/>.
+        /// </returns>
+        /// <remarks>Этот метод по умолчанию не отслеживает запрос.</remarks>
         Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null,
                                                     Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                     Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
@@ -65,17 +90,20 @@ namespace Shop.Infrastructure.Repository.Interfaces
                                                     CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Gets the <see cref="IPagedList{TResult}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// Возвращает <see cref="IPagedList{TEntity}"/> на основе условия выборки, сортировки. Этот метод по умолчанию не отслеживает запрос.
         /// </summary>
-        /// <param name="selector">The selector for projection.</param>
-        /// <param name="predicate">A function to test each element for a condition.</param>
-        /// <param name="orderBy">A function to order elements.</param>
-        /// <param name="include">A function to include navigation properties</param>
-        /// <param name="pageIndex">The index of page.</param>
-        /// <param name="pageSize">The size of the page.</param>
-        /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
-        /// <returns>An <see cref="IPagedList{TResult}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
-        /// <remarks>This method default no-tracking query.</remarks>
+        /// <param name="selector">Проекция зависимости.</param>
+        /// <param name="predicate">Функция условний для выборки.</param>
+        /// <param name="orderBy">Функция сортировки.</param>
+        /// <param name="include">Функция подключения навигаций дочерних/родительских элементов.</param>
+        /// <param name="pageIndex">Номер выбронной страницы.</param>
+        /// <param name="pageSize">Количество объектов на странице.</param>
+        /// <param name="disableTracking"><c>True</c> для отключения отслеживания запроса; в противном случае, <c>false</c>. По умолчанию: <c>true</c>.</param>
+        /// <returns>
+        ///     Коллекция <see cref="IPagedList{TEntity}"/> которая содержит элементы удовлетворающие
+        ///     условию выборки <paramref name="predicate"/>, сортировки <paramref name="orderBy"/> и навигаций <paramref name="include"/>.
+        /// </returns>
+        /// <remarks>Этот метод по умолчанию не отслеживает запрос.</remarks>
         IPagedList<TResult> GetPagedList<TResult>(Expression<Func<TEntity, TResult>> selector,
                                                   Expression<Func<TEntity, bool>> predicate = null,
                                                   Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
@@ -85,20 +113,21 @@ namespace Shop.Infrastructure.Repository.Interfaces
                                                   bool disableTracking = true) where TResult : class;
 
         /// <summary>
-        /// Gets the <see cref="IPagedList{TEntity}"/> based on a predicate, orderby delegate and page information. This method default no-tracking query.
+        /// Асинхронный метод возвращающий <see cref="IPagedList{TEntity}"/> на основе условия выборки, сортировки. Этот метод по умолчанию не отслеживает запрос.
         /// </summary>
-        /// <param name="selector">The selector for projection.</param>
-        /// <param name="predicate">A function to test each element for a condition.</param>
-        /// <param name="orderBy">A function to order elements.</param>
-        /// <param name="include">A function to include navigation properties</param>
-        /// <param name="pageIndex">The index of page.</param>
-        /// <param name="pageSize">The size of the page.</param>
-        /// <param name="disableTracking"><c>True</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
-        /// <param name="cancellationToken">
-        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
-        /// </param>
-        /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
-        /// <remarks>This method default no-tracking query.</remarks>
+        /// <param name="selector">Проекция зависимости.</param>
+        /// <param name="predicate">Функция условний для выборки.</param>
+        /// <param name="orderBy">Функция сортировки.</param>
+        /// <param name="include">Функция подключения навигаций дочерних/родительских элементов.</param>
+        /// <param name="pageIndex">Номер выбронной страницы.</param>
+        /// <param name="pageSize">Количество объектов на странице.</param>
+        /// <param name="disableTracking"><c>True</c> для отключения отслеживания запроса; в противном случае, <c>false</c>. По умолчанию: <c>true</c>.</param>
+        /// <param name="cancellationToken"><see cref="CancellationToken" /> маркер отмены.</param>
+        /// <returns>
+        ///     Коллекция <see cref="IPagedList{TEntity}"/> которая содержит элементы удовлетворающие
+        ///     условию выборки <paramref name="predicate"/>, сортировки <paramref name="orderBy"/> и навигаций <paramref name="include"/>.
+        /// </returns>
+        /// <remarks>Этот метод по умолчанию не отслеживает запрос.</remarks>
         Task<IPagedList<TResult>> GetPagedListAsync<TResult>(Expression<Func<TEntity, TResult>> selector,
                                                              Expression<Func<TEntity, bool>> predicate = null,
                                                              Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
@@ -109,29 +138,35 @@ namespace Shop.Infrastructure.Repository.Interfaces
                                                              CancellationToken cancellationToken = default(CancellationToken)) where TResult : class;
 
         /// <summary>
-        /// Gets the first or default entity based on a predicate, orderby delegate and include delegate. This method defaults to a read-only, no-tracking query.
+        /// Возвращает первый или по умолчанию объект на основе условия выборки, сортировки и навигаций. Этот метод по умолчанию не отслеживает запрос.
         /// </summary>
-        /// <param name="predicate">A function to test each element for a condition.</param>
-        /// <param name="orderBy">A function to order elements.</param>
-        /// <param name="include">A function to include navigation properties</param>
-        /// <param name="disableTracking"><c>true</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
-        /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
-        /// <remarks>This method defaults to a read-only, no-tracking query.</remarks>
+        /// <param name="predicate">Функция условний для выборки.</param>
+        /// <param name="orderBy">Функция сортировки.</param>
+        /// <param name="include">Функция подключения навигаций дочерних/родительских элементов.</param>
+        /// <param name="disableTracking"><c>True</c> для отключения отслеживания запроса; в противном случае, <c>false</c>. По умолчанию: <c>true</c>.</param>
+        /// <returns>
+        ///     Возвращает первый или по умолчанию объект на основе условия выборки <paramref name="predicate"/>,
+        ///     сортировки <paramref name="orderBy"/> и навигаций <paramref name="include"/>.
+        /// </returns>
+        /// <remarks>Этот метод по умолчанию не отслеживает запрос.</remarks>
         TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> predicate = null,
                                   Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                   Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                                   bool disableTracking = true);
 
         /// <summary>
-        /// Gets the first or default entity based on a predicate, orderby delegate and include delegate. This method defaults to a read-only, no-tracking query.
+        /// Возвращает первый или по умолчанию объект на основе условия выборки, сортировки и навигаций. Этот метод по умолчанию не отслеживает запрос.
         /// </summary>
-        /// <param name="selector">The selector for projection.</param>
-        /// <param name="predicate">A function to test each element for a condition.</param>
-        /// <param name="orderBy">A function to order elements.</param>
-        /// <param name="include">A function to include navigation properties</param>
-        /// <param name="disableTracking"><c>true</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
-        /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
-        /// <remarks>This method defaults to a read-only, no-tracking query.</remarks>
+        /// <param name="selector">Проекция зависимости.</param>
+        /// <param name="predicate">Функция условний для выборки.</param>
+        /// <param name="orderBy">Функция сортировки.</param>
+        /// <param name="include">Функция подключения навигаций дочерних/родительских элементов.</param>
+        /// <param name="disableTracking"><c>True</c> для отключения отслеживания запроса; в противном случае, <c>false</c>. По умолчанию: <c>true</c>.</param>
+        /// <returns>
+        ///     Возвращает первый или по умолчанию объект на основе условия выборки <paramref name="predicate"/>,
+        ///     сортировки <paramref name="orderBy"/> и навигаций <paramref name="include"/>.
+        /// </returns>
+        /// <remarks>Этот метод по умолчанию не отслеживает запрос.</remarks>
         TResult GetFirstOrDefault<TResult>(Expression<Func<TEntity, TResult>> selector,
                                            Expression<Func<TEntity, bool>> predicate = null,
                                            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
@@ -139,15 +174,35 @@ namespace Shop.Infrastructure.Repository.Interfaces
                                            bool disableTracking = true);
 
         /// <summary>
-        /// Gets the first or default entity based on a predicate, orderby delegate and include delegate. This method defaults to a read-only, no-tracking query.
+        /// Асинхронно возвращает первый или по умолчанию объект на основе условия выборки, сортировки и навигаций. Этот метод по умолчанию не отслеживает запрос.
         /// </summary>
-        /// <param name="selector">The selector for projection.</param>
-        /// <param name="predicate">A function to test each element for a condition.</param>
-        /// <param name="orderBy">A function to order elements.</param>
-        /// <param name="include">A function to include navigation properties</param>
-        /// <param name="disableTracking"><c>true</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
-        /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
-        /// <remarks>Ex: This method defaults to a read-only, no-tracking query.</remarks>
+        /// <param name="predicate">Функция условний для выборки.</param>
+        /// <param name="orderBy">Функция сортировки.</param>
+        /// <param name="include">Функция подключения навигаций дочерних/родительских элементов.</param>
+        /// <param name="disableTracking"><c>True</c> для отключения отслеживания запроса; в противном случае, <c>false</c>. По умолчанию: <c>true</c>.</param>
+        /// <returns>
+        ///     Возвращает первый или по умолчанию объект на основе условия выборки <paramref name="predicate"/>,
+        ///     сортировки <paramref name="orderBy"/> и навигаций <paramref name="include"/>.
+        /// </returns>
+        /// <remarks>Этот метод по умолчанию не отслеживает запрос.</remarks>
+        Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+            bool disableTracking = true);
+
+        /// <summary>
+        /// Асинхронно возвращает первый или по умолчанию объект на основе условия выборки, сортировки и навигаций. Этот метод по умолчанию не отслеживает запрос.
+        /// </summary>
+        /// <param name="selector">Проекция зависимости.</param>
+        /// <param name="predicate">Функция условний для выборки.</param>
+        /// <param name="orderBy">Функция сортировки.</param>
+        /// <param name="include">Функция подключения навигаций дочерних/родительских элементов.</param>
+        /// <param name="disableTracking"><c>True</c> для отключения отслеживания запроса; в противном случае, <c>false</c>. По умолчанию: <c>true</c>.</param>
+        /// <returns>
+        ///     Возвращает первый или по умолчанию объект на основе условия выборки <paramref name="predicate"/>,
+        ///     сортировки <paramref name="orderBy"/> и навигаций <paramref name="include"/>.
+        /// </returns>
+        /// <remarks>Этот метод по умолчанию не отслеживает запрос.</remarks>
         Task<TResult> GetFirstOrDefaultAsync<TResult>(Expression<Func<TEntity, TResult>> selector,
             Expression<Func<TEntity, bool>> predicate = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
@@ -155,144 +210,129 @@ namespace Shop.Infrastructure.Repository.Interfaces
             bool disableTracking = true);
 
         /// <summary>
-        /// Gets the first or default entity based on a predicate, orderby delegate and include delegate. This method defaults to a read-only, no-tracking query.
+        /// Использует необработанные SQL-запросы для выборки <typeparamref name="TEntity" />.
         /// </summary>
-        /// <param name="predicate">A function to test each element for a condition.</param>
-        /// <param name="orderBy">A function to order elements.</param>
-        /// <param name="include">A function to include navigation properties</param>
-        /// <param name="disableTracking"><c>true</c> to disable changing tracking; otherwise, <c>false</c>. Default to <c>true</c>.</param>
-        /// <returns>An <see cref="IPagedList{TEntity}"/> that contains elements that satisfy the condition specified by <paramref name="predicate"/>.</returns>
-        /// <remarks>Ex: This method defaults to a read-only, no-tracking query. </remarks>
-        Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-            bool disableTracking = true);
-
-        /// <summary>
-        /// Uses raw SQL queries to fetch the specified <typeparamref name="TEntity" /> data.
-        /// </summary>
-        /// <param name="sql">The raw SQL.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>An <see cref="IQueryable{TEntity}" /> that contains elements that satisfy the condition specified by raw SQL.</returns>
+        /// <param name="sql">Необработанный SQL-запрос.</param>
+        /// <param name="parameters">Параметры.</param>
+        /// <returns><see cref="IQueryable{TEntity}" /> удовлетворяющие необработанному SQL-запросу <paramref name="sql"/>.</returns>
         IQueryable<TEntity> FromSql(string sql, params object[] parameters);
 
         /// <summary>
-        /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// Ищет объект по значению первичного ключа. Если объект не найден вернёт null.
         /// </summary>
-        /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
-        /// <returns>The found entity or null.</returns>
+        /// <param name="keyValues">Значения первичного ключа.</param>
+        /// <returns>Объект или null.</returns>
         TEntity Find(params object[] keyValues);
 
         /// <summary>
-        /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// Асинхронно ищет объект по значению первичного ключа. Если объект не найден вернёт null.
         /// </summary>
-        /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
-        /// <returns>A <see cref="Task{TEntity}"/> that represents the asynchronous find operation. The task result contains the found entity or null.</returns>
+        /// <param name="keyValues">Значения первичного ключа.</param>
+        /// <returns><see cref="Task{TEntity}"/> по асинхронному поиску объекта. Результатом будет либо объект, либо null.</returns>
         Task<TEntity> FindAsync(params object[] keyValues);
 
         /// <summary>
-        /// Finds an entity with the given primary key values. If found, is attached to the context and returned. If no entity is found, then null is returned.
+        /// Асинхронно ищет объект по значению первичного ключа. Если объект не найден вернёт null.
         /// </summary>
-        /// <param name="keyValues">The values of the primary key for the entity to be found.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-        /// <returns>A <see cref="Task{TEntity}"/> that represents the asynchronous find operation. The task result contains the found entity or null.</returns>
+        /// <param name="keyValues">Значения первичного ключа.</param>
+        /// <param name="cancellationToken"><see cref="CancellationToken"/> маркер отмены.</param>
+        /// <returns><see cref="Task{TEntity}"/> по асинхронному поиску объекта. Результатом будет либо объект, либо null.</returns>
         Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets all entities. This method is not recommended
+        /// Возвразает число объектов удовлетворяющие заднанному условию.
         /// </summary>
-        /// <returns>The <see cref="IQueryable{TEntity}"/>.</returns>
-        [Obsolete("This method is not recommended, please use GetPagedList or GetPagedListAsync methods")]
-        IQueryable<TEntity> GetAll();
-
-        /// <summary>
-        /// Gets the count based on a predicate.
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
+        /// <param name="predicate">Функция условия выборки.</param>
+        /// <returns>Число.</returns>
         int Count(Expression<Func<TEntity, bool>> predicate = null);
 
+        #endregion Методы поиска объектов
+
+        #region Методы изменений объектов
+
         /// <summary>
-        /// Inserts a new entity synchronously.
+        /// Добавляет объект.
         /// </summary>
-        /// <param name="entity">The entity to insert.</param>
+        /// <param name="entity">Объект для добавления.</param>
         void Insert(TEntity entity);
 
         /// <summary>
-        /// Inserts a range of entities synchronously.
+        /// Добавляет объекты.
         /// </summary>
-        /// <param name="entities">The entities to insert.</param>
+        /// <param name="entities">Объекты для добавления.</param>
         void Insert(params TEntity[] entities);
 
         /// <summary>
-        /// Inserts a range of entities synchronously.
+        /// Добавляет объекты.
         /// </summary>
-        /// <param name="entities">The entities to insert.</param>
+        /// <param name="entities">Объекты для добавления.</param>
         void Insert(IEnumerable<TEntity> entities);
 
         /// <summary>
-        /// Inserts a new entity asynchronously.
+        /// Добовляет асинхронно объект.
         /// </summary>
-        /// <param name="entity">The entity to insert.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-        /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
+        /// <param name="entity">Объект для добавления.</param>
+        /// <param name="cancellationToken"><see cref="CancellationToken"/> маркер отмены.</param>
+        /// <returns><see cref="Task"/> предоставляющую асинхронную операцию добавления объекта.</returns>
         Task InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Inserts a range of entities asynchronously.
+        /// Добовляет асинхронно объекты.
         /// </summary>
-        /// <param name="entities">The entities to insert.</param>
-        /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
+        /// <param name="entities">Объекты для добавления.</param>
+        /// <returns><see cref="Task"/> предоставляющую асинхронную операцию добавления объектов.</returns>
         Task InsertAsync(params TEntity[] entities);
 
         /// <summary>
-        /// Inserts a range of entities asynchronously.
+        /// Добовляет асинхронно объекты.
         /// </summary>
-        /// <param name="entities">The entities to insert.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-        /// <returns>A <see cref="Task"/> that represents the asynchronous insert operation.</returns>
+        /// <param name="entities">Объекты для добавления.</param>
+        /// <param name="cancellationToken"><see cref="CancellationToken"/> маркер отмены.</param>
+        /// <returns><see cref="Task"/> предоставляющую асинхронную операцию добавления объектов.</returns>
         Task InsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Updates the specified entity.
+        /// Обновляет указанный объект.
         /// </summary>
-        /// <param name="entity">The entity.</param>
+        /// <param name="entity">Объект для обновления.</param>
         void Update(TEntity entity);
 
         /// <summary>
-        /// Updates the specified entities.
+        /// Обновляет указанные объекты.
         /// </summary>
-        /// <param name="entities">The entities.</param>
+        /// <param name="entities">Объекты для обновления.</param>
         void Update(params TEntity[] entities);
 
         /// <summary>
-        /// Updates the specified entities.
+        /// Обновляет указанные объекты.
         /// </summary>
-        /// <param name="entities">The entities.</param>
+        /// <param name="entities">Объекты для обновления.</param>
         void Update(IEnumerable<TEntity> entities);
 
         /// <summary>
-        /// Deletes the entity by the specified primary key.
+        /// Удаляет объект по значению первичного ключа.
         /// </summary>
-        /// <param name="id">The primary key value.</param>
+        /// <param name="id">Значение первичного ключа.</param>
         void Delete(object id);
 
         /// <summary>
-        /// Deletes the specified entity.
+        /// Удаляет указанный объект.
         /// </summary>
-        /// <param name="entity">The entity to delete.</param>
+        /// <param name="entity">Объект для удаления.</param>
         void Delete(TEntity entity);
 
         /// <summary>
-        /// Deletes the specified entities.
+        /// Удаляет указанные объекты.
         /// </summary>
-        /// <param name="entities">The entities.</param>
+        /// <param name="entities">Объекты для удаления.</param>
         void Delete(params TEntity[] entities);
 
         /// <summary>
-        /// Deletes the specified entities.
+        /// Удаляет указанные объекты.
         /// </summary>
-        /// <param name="entities">The entities.</param>
+        /// <param name="entities">Объекты для удаления.</param>
         void Delete(IEnumerable<TEntity> entities);
+
+        #endregion Методы изменений объектов
     }
 }

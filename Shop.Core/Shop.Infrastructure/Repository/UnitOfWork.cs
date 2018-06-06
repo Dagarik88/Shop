@@ -13,36 +13,61 @@ using System.Threading.Tasks;
 namespace Shop.Infrastructure.Repository
 {
     /// <summary>
-    /// Represents the default implementation of the <see cref="IUnitOfWork"/> and <see cref="IUnitOfWork{TContext}"/> interface.
+    /// Обобщенная единица работы с базой данных.
     /// </summary>
-    /// <typeparam name="TContext">The type of the db context.</typeparam>
+    /// <typeparam name="TContext">Тип контекста работы с БД.</typeparam>
     public class UnitOfWork<TContext> : IRepositoryFactory, IUnitOfWork<TContext>, IUnitOfWork where TContext : DbContext
     {
-        private readonly TContext _context;
-        private bool disposed = false;
-        private Dictionary<Type, object> repositories;
+        #region Поля
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnitOfWork{TContext}"/> class.
+        /// Контекст работы с БД.
         /// </summary>
-        /// <param name="context">The context.</param>
+        private readonly TContext _context;
+
+        /// <summary>
+        /// Флаг высвобождения неуправлаемых ресурсов.
+        /// </summary>
+        private bool disposed = false;
+
+        /// <summary>
+        /// Коллекция репозиториев.
+        /// </summary>
+        private Dictionary<Type, object> repositories;
+
+        #endregion Поля
+
+        #region Конструкторы
+
+        /// <summary>
+        /// Контсруктор по умолчанию.
+        /// </summary>
+        /// <param name="context">Контекст работы с БД.</param>
         public UnitOfWork(TContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        #endregion Конструкторы
+
+        #region Свойства
+
         /// <summary>
-        /// Gets the db context.
+        /// Контекст работы с БД.
         /// </summary>
         /// <returns>The instance of type <typeparamref name="TContext"/>.</returns>
         public TContext DbContext => _context;
 
+        #endregion Свойства
+
+        #region Методы
+
         /// <summary>
-        /// Changes the database name. This require the databases in the same machine. NOTE: This only work for MySQL right now.
+        /// Изменяет имя базы данных.Для этого требуются базы данных на одном компьютере.Примечание: это только работает для MySQL прямо сейчас.
         /// </summary>
-        /// <param name="database">The database name.</param>
+        /// <param name="database">Имя базы данных.</param>
         /// <remarks>
-        /// This only been used for supporting multiple databases in the same model. This require the databases in the same machine.
+        /// Это используется только для поддержки нескольких баз данных в одной модели. Для этого требуются базы данных на одном компьютере.
         /// </remarks>
         public void ChangeDatabase(string database)
         {
@@ -57,7 +82,7 @@ namespace Shop.Infrastructure.Repository
                 connection.ConnectionString = connectionString;
             }
 
-            // Following code only working for mysql.
+            // Следующий код работает только для mysql
             var items = _context.Model.GetEntityTypes();
             foreach (var item in items)
             {
@@ -69,10 +94,10 @@ namespace Shop.Infrastructure.Repository
         }
 
         /// <summary>
-        /// Gets the specified repository for the <typeparamref name="TEntity"/>.
+        /// Возвращает репозиторий для типа объекта <typeparamref name="TEntity"/>.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <returns>An instance of type inherited from <see cref="IRepository{TEntity}"/> interface.</returns>
+        /// <typeparam name="TEntity">Тип объекта.</typeparam>
+        /// <returns>Экземпляр реализующий <see cref="IRepository{TEntity}"/> интерфейс.</returns>
         public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class
         {
             if (repositories == null)
@@ -90,27 +115,10 @@ namespace Shop.Infrastructure.Repository
         }
 
         /// <summary>
-        /// Executes the specified raw SQL command.
+        /// Сохраняет в базе данных все изменения, внесенные в этом контексте.
         /// </summary>
-        /// <param name="sql">The raw SQL.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>The number of state entities written to database.</returns>
-        public int ExecuteSqlCommand(string sql, params object[] parameters) => _context.Database.ExecuteSqlCommand(sql, parameters);
-
-        /// <summary>
-        /// Uses raw SQL queries to fetch the specified <typeparamref name="TEntity" /> data.
-        /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <param name="sql">The raw SQL.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>An <see cref="IQueryable{T}" /> that contains elements that satisfy the condition specified by raw SQL.</returns>
-        public IQueryable<TEntity> FromSql<TEntity>(string sql, params object[] parameters) where TEntity : class => _context.Set<TEntity>().FromSql(sql, parameters);
-
-        /// <summary>
-        /// Saves all changes made in this context to the database.
-        /// </summary>
-        /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
-        /// <returns>The number of state entries written to the database.</returns>
+        /// <param name="ensureAutoHistory"><c>True</c> если сохранять все изменения в истории изменений. По умолчанию <c>False</c></param>
+        /// <returns>Количество изменённых записей в базе данных.</returns>
         public int SaveChanges(bool ensureAutoHistory = false)
         {
             if (ensureAutoHistory)
@@ -122,10 +130,13 @@ namespace Shop.Infrastructure.Repository
         }
 
         /// <summary>
-        /// Asynchronously saves all changes made in this unit of work to the database.
+        /// Асинхронно сохраняет все изменения в базу данных, внесенные в эту единицу работы.
         /// </summary>
-        /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
-        /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
+        /// <param name="ensureAutoHistory"><c>True</c> если сохранять все изменения в истории изменений. По умолчанию <c>False</c></param>
+        /// <returns>
+        ///     <see cref="Task{TResult}"/> предоставляющую асинхронную запись изменений в базу данных.
+        ///     Результатом задачи будет число изменённых записей в базе данных.
+        /// </returns>
         public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false)
         {
             if (ensureAutoHistory)
@@ -163,14 +174,31 @@ namespace Shop.Infrastructure.Repository
 
                     return count;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     transaction.Rollback();
 
-                    throw ex;
+                    throw;
                 }
             }
         }
+
+        /// <summary>
+        /// Выполняет необработанный SQL-запрос.
+        /// </summary>
+        /// <param name="sql">Необработанный SQL-запрос.</param>
+        /// <param name="parameters">Параметры.</param>
+        /// <returns>Количества записей в базу данных.</returns>
+        public int ExecuteSqlCommand(string sql, params object[] parameters) => _context.Database.ExecuteSqlCommand(sql, parameters);
+
+        /// <summary>
+        /// Получает объект на основе типа <typeparamref name="TEntity"/> при помощи необработанного SQL-запроса.
+        /// </summary>
+        /// <typeparam name="TEntity">Тип объекта.</typeparam>
+        /// <param name="sql">Необработанный SQL-запрос.</param>
+        /// <param name="parameters">Параметры.</param>
+        /// <returns>Коллекцию <see cref="IQueryable{T}"/> удовлетворяющую услвоию необработанного SQL-запроса.</returns>
+        public IQueryable<TEntity> FromSql<TEntity>(string sql, params object[] parameters) where TEntity : class => _context.Set<TEntity>().FromSql(sql, parameters);
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -183,22 +211,22 @@ namespace Shop.Infrastructure.Repository
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Выполняет определенные приложением задачи, связанные с освобождением, освобождением или сбросом неуправляемых ресурсов
         /// </summary>
-        /// <param name="disposing">The disposing.</param>
+        /// <param name="disposing">Флаг высвобождения.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposed)
             {
                 if (disposing)
                 {
-                    // clear repositories
+                    // ичистить репозитории
                     if (repositories != null)
                     {
                         repositories.Clear();
                     }
 
-                    // dispose the db context.
+                    // освободить контекст работы с БД.
                     _context.Dispose();
                 }
             }
@@ -206,9 +234,16 @@ namespace Shop.Infrastructure.Repository
             disposed = true;
         }
 
+        /// <summary>
+        /// Использует TrakGrap Api для подключения/отключения объектов
+        /// </summary>
+        /// <param name="rootEntity">Головной объект</param>
+        /// <param name="callback">Делегат для преобразования свойств объекта в свойства сущности.</param>
         public void TrackGraph(object rootEntity, Action<EntityEntryGraphNode> callback)
         {
             _context.ChangeTracker.TrackGraph(rootEntity, callback);
         }
+
+        #endregion Методы
     }
 }

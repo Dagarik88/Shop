@@ -6,20 +6,23 @@ using System.Threading.Tasks;
 
 namespace Shop.Infrastructure.Repository.PagedList
 {
+    /// <summary>
+    /// Расширение для преобразование коллекции IQueryable в IPagedList
+    /// </summary>
     public static class IQueryablePageListExtensions
     {
         /// <summary>
-        /// Converts the specified source to <see cref="IPagedList{T}"/> by the specified <paramref name="pageIndex"/> and <paramref name="pageSize"/>.
+        ///     Преобразует коллекцию IQueryable в <see cref="IPagedList{T}"/>
+        ///     согласно значению выбранного страницы <paramref name="pageIndex"/>
+        ///     и количеству объектов <paramref name="pageSize"/>.
         /// </summary>
-        /// <typeparam name="T">The type of the source.</typeparam>
-        /// <param name="source">The source to paging.</param>
-        /// <param name="pageIndex">The index of the page.</param>
-        /// <param name="pageSize">The size of the page.</param>
-        /// <param name="cancellationToken">
-        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
-        /// </param>
+        /// <typeparam name="T">Тип объекта.</typeparam>
+        /// <param name="source">Источник.</param>
+        /// <param name="pageIndex">Номер выбранной страницы.</param>
+        /// <param name="pageSize">Количество на странице.</param>
+        /// <param name="cancellationToken"><see cref="CancellationToken" /> маркер отмены.</param>
         /// <param name="indexFrom">The start index value.</param>
-        /// <returns>An instance of the inherited from <see cref="IPagedList{T}"/> interface.</returns>
+        /// <returns>Экземпляр <see cref="IPagedList{T}"/>.</returns>
         public static async Task<IPagedList<T>> ToPagedListAsync<T>(this IQueryable<T> source, int pageIndex, int pageSize, int indexFrom = 0, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (indexFrom > pageIndex)

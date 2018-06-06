@@ -16,3 +16,13 @@ Shop\.Parsers/Shop\.Parsers\.Samson/Shop\.Parsers\.SamsonOpt/bin/
 Shop\.Parsers/Shop\.Parsers\.Samson/Shop\.Parsers\.SamsonOpt\.Model/bin/
 
 Shop\.Parsers/Shop\.Parsers\.Samson/Shop\.Parsers\.SamsonOpt\.Service/bin/
+
+Shop\.Core/Shop\.Models/bin/
+
+Shop\.Core/Shop\.Api/Shop\.Api\.xml
+
+Shop\.Core/Shop\.Api/Shop\.Data\.xml
+
+Shop\.Core/Shop\.Api/Shop\.Models\.xml
+
+*.user

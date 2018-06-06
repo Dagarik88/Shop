@@ -3,52 +3,57 @@
 namespace Shop.Infrastructure.Repository.PagedList
 {
     /// <summary>
-    /// Provides the interface(s) for paged list of any type.
+    /// Интерфейс для постраничного представления коллекции.
     /// </summary>
-    /// <typeparam name="T">The type for paging.</typeparam>
+    /// <typeparam name="T">Тип объекта для постраничного разбиения.</typeparam>
     public interface IPagedList<T>
     {
         /// <summary>
-        /// Gets the index start value.
+        /// Возвращает номер начальной страницы.
         /// </summary>
-        /// <value>The index start value.</value>
+        /// <value>Номер начальной страницы.</value>
         int IndexFrom { get; }
 
         /// <summary>
-        /// Gets the page index (current).
+        /// Возвращаен номер выбранной страницы.
         /// </summary>
+        /// <value>Номер выбранной страницы.</value>
         int PageIndex { get; }
 
         /// <summary>
-        /// Gets the page size.
+        /// Возвращает количиство объектов на странице.
         /// </summary>
+        /// <value>Количиство объектов на странице.</value>
         int PageSize { get; }
 
         /// <summary>
-        /// Gets the total count of the list of type <typeparamref name="T"/>
+        /// Возвращает общее количество объектов типа <typeparamref name="T"/>.
         /// </summary>
+        /// <value>Общее количество объектов типа <typeparamref name="T"/>.</value>
         int TotalCount { get; }
 
         /// <summary>
-        /// Gets the total pages.
+        /// Возвращает общее количество страниц.
         /// </summary>
+        /// <value>Общее количество страниц.</value>
         int TotalPages { get; }
 
         /// <summary>
-        /// Gets the current page items.
+        /// Возвращает ограниченную коллекцию объектов <typeparamref name="T"/>.
         /// </summary>
+        /// <value>Коллекция объектов <typeparamref name="T"/>.</value>
         IList<T> Items { get; }
 
         /// <summary>
-        /// Gets the has previous page.
+        /// Возвращает фалаг существования предыдущей страницы.
         /// </summary>
-        /// <value>The has previous page.</value>
+        /// <value>Существование предыдущей страницы.</value>
         bool HasPreviousPage { get; }
 
         /// <summary>
-        /// Gets the has next page.
+        /// Возвращает фалаг существования следующей страницы.
         /// </summary>
-        /// <value>The has next page.</value>
+        /// <value>Существование следующей страницы.</value>
         bool HasNextPage { get; }
     }
 }

@@ -4,22 +4,25 @@ using System.Threading.Tasks;
 namespace Shop.Infrastructure.Repository.Interfaces
 {
     /// <summary>
-    /// Defines the interface(s) for generic unit of work.
+    /// Обобщенный интерфейс для единиц работы с базой данных.
     /// </summary>
     public interface IUnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
     {
         /// <summary>
-        /// Gets the db context.
+        /// Возвразает <typeparamref name="TContext"/>.
         /// </summary>
-        /// <returns>The instance of type <typeparamref name="TContext"/>.</returns>
+        /// <returns>Экземпляр <typeparamref name="TContext"/>.</returns>
         TContext DbContext { get; }
 
         /// <summary>
-        /// Saves all changes made in this context to the database with distributed transaction.
+        /// Сохраняет все изменения, сделанные в этом контексте, в базе данных.
         /// </summary>
-        /// <param name="ensureAutoHistory"><c>True</c> if save changes ensure auto record the change history.</param>
-        /// <param name="unitOfWorks">An optional <see cref="IUnitOfWork"/> array.</param>
-        /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous save operation. The task result contains the number of state entities written to database.</returns>
+        /// <param name="ensureAutoHistory"><c>True</c> если сохранять все изменения в истории изменений. По умолчанию <c>False</c></param>
+        /// <param name="unitOfWorks">Одна или коллекция единиц работ с базой данных <see cref="IUnitOfWork"/>.</param>
+        /// <returns>
+        ///     <see cref="Task{TResult}"/> предоставляющую асинхронную запись изменений в базу данных. 
+        ///     Результатом задачи будет число изменённых записей в базе данных.
+        /// </returns>
         Task<int> SaveChangesAsync(bool ensureAutoHistory = false, params IUnitOfWork[] unitOfWorks);
     }
 }

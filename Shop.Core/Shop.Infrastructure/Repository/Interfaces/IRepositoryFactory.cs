@@ -1,15 +1,15 @@
 ﻿namespace Shop.Infrastructure.Repository.Interfaces
 {
     /// <summary>
-    /// Defines the interfaces for <see cref="IRepository{TEntity}"/> interfaces.
+    /// Интерфейс для фабрики реализующие <see cref="IRepository{TEntity}"/> интерфейс.
     /// </summary>
     public interface IRepositoryFactory
     {
         /// <summary>
-        /// Gets the specified repository for the <typeparamref name="TEntity"/>.
+        /// Возвращает репозиторий на основе типа запрашиваемых объектов<typeparamref name="TEntity"/>.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <returns>An instance of type inherited from <see cref="IRepository{TEntity}"/> interface.</returns>
+        /// <typeparam name="TEntity">Тип объекта.</typeparam>
+        /// <returns>Экземпляр реализующий <see cref="IRepository{TEntity}"/> интерфейс.</returns>
         IRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
     }
 }

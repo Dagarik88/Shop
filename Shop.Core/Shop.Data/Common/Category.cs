@@ -27,7 +27,7 @@ namespace Shop.Data.Common
         /// <summary>
         /// Активность категории.
         /// </summary>
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; }
 
         /// <summary>
         /// Порядковый номер.

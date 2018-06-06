@@ -4,32 +4,37 @@ using System.Collections.Generic;
 namespace Shop.Infrastructure.Repository.PagedList
 {
     /// <summary>
-    /// Provides some extension methods for <see cref="IEnumerable{T}"/> to provide paging capability.
+    /// Расширение <see cref="IEnumerable{T}"/>, обеспечивающее возможность разбиения коллекций по страницам.
     /// </summary>
     public static class IEnumerablePagedListExtensions
     {
         /// <summary>
-        /// Converts the specified source to <see cref="IPagedList{T}"/> by the specified <paramref name="pageIndex"/> and <paramref name="pageSize"/>.
+        ///     Преобразует в постраничный список <see cref="IPagedList{T}"/>
+        ///     согласно номеру выбранной страницы <paramref name="pageIndex"/>
+        ///     и количества объектов на странице <paramref name="pageSize"/>.
         /// </summary>
-        /// <typeparam name="T">The type of the source.</typeparam>
-        /// <param name="source">The source to paging.</param>
-        /// <param name="pageIndex">The index of the page.</param>
-        /// <param name="pageSize">The size of the page.</param>
-        /// <param name="indexFrom">The start index value.</param>
-        /// <returns>An instance of the inherited from <see cref="IPagedList{T}"/> interface.</returns>
+        /// <typeparam name="T">Тип объекта.</typeparam>
+        /// <param name="source">Коллекция для постраничного разбиения.</param>
+        /// <param name="pageIndex">Номер страницы.</param>
+        /// <param name="pageSize">Количество объектов на стринице.</param>
+        /// <param name="indexFrom">Начальное значение.</param>
+        /// <returns>Экземпляр <see cref="IPagedList{T}"/>.</returns>
         public static IPagedList<T> ToPagedList<T>(this IEnumerable<T> source, int pageIndex, int pageSize, int indexFrom = 0) => new PagedList<T>(source, pageIndex, pageSize, indexFrom);
 
         /// <summary>
-        /// Converts the specified source to <see cref="IPagedList{T}"/> by the specified <paramref name="converter"/>, <paramref name="pageIndex"/> and <paramref name="pageSize"/>
+        ///     Преобразует в постраничный список <see cref="IPagedList{T}"/>
+        ///     по указанному <paramref name="converter"/>,
+        ///     согласно номеру выбранной страницы <paramref name="pageIndex"/>
+        ///     и количества объектов на странице <paramref name="pageSize"/>.
         /// </summary>
-        /// <typeparam name="TSource">The type of the source.</typeparam>
-        /// <typeparam name="TResult">The type of the result</typeparam>
-        /// <param name="source">The source to convert.</param>
-        /// <param name="converter">The converter to change the <typeparamref name="TSource"/> to <typeparamref name="TResult"/>.</param>
-        /// <param name="pageIndex">The page index.</param>
-        /// <param name="pageSize">The page size.</param>
-        /// <param name="indexFrom">The start index value.</param>
-        /// <returns>An instance of the inherited from <see cref="IPagedList{T}"/> interface.</returns>
+        /// <typeparam name="TSource">Тип объекта.</typeparam>
+        /// <typeparam name="TResult">Тип результирующего объекта.</typeparam>
+        /// <param name="source">Коллекция для постраничного разбиения.</param>
+        /// <param name="converter">Функция конвертирующая из <typeparamref name="TSource"/> в <typeparamref name="TResult"/>.</param>
+        /// <param name="pageIndex">Номер выбранной страницы.</param>
+        /// <param name="pageSize">Количество объектов на стринице.</param>
+        /// <param name="indexFrom">Начальное значение.</param>
+        /// <returns>Экземпляр <see cref="IPagedList{T}"/>.</returns>
         public static IPagedList<TResult> ToPagedList<TSource, TResult>(this IEnumerable<TSource> source, Func<IEnumerable<TSource>, IEnumerable<TResult>> converter, int pageIndex, int pageSize, int indexFrom = 0) => new PagedList<TSource, TResult>(source, converter, pageIndex, pageSize, indexFrom);
     }
 }
